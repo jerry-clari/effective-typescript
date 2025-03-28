@@ -22,7 +22,25 @@ function vectorLength(point: Point2D | Point3D): number {
   return Math.sqrt(result);
 }
 
-function getPointFromAPI(): Point2D | Point3D {
+
+function assertHasPropertyNum<T extends object, K extends keyof T>(obj: T, prop: K): asserts obj is T & Record<K, number> {
+    if (!(prop in obj) || typeof obj[prop] !== 'number') {
+        throw new Error(`Object does not have property ${String(prop)}`);
+    }
+}
+
+async function getPointFromAPI(): Promise<Point2D | Point3D> {
+  const result = await fetch('');
+  const json = await result.json();
+
+  if (json && typeof json === 'object') {
+    const jsonObj: { [key: string]: any } = json ;
+    assertHasPropertyNum(jsonObj, 'x');
+    assertHasPropertyNum(jsonObj, 'y');
+    assertHasPropertyNum(jsonObj, 'z');
+    return jsonObj;
+  }
+
   const point = {
     x: 2,
     y: 2,
@@ -35,7 +53,7 @@ class Point {
   y = 2;
 }
 
-export default function Chapter1() {
+export default async function Chapter1() {
   vectorLength({
     x: 1,
     y: 1,
@@ -49,5 +67,11 @@ export default function Chapter1() {
 
   vectorLength(new Point());
 
-  vectorLength(getPointFromAPI());
+  try {
+    vectorLength(await getPointFromAPI());
+  } catch (e) {
+    console.error(e);
+    // The result is bad
+    // Do error handling
+  }
 }
