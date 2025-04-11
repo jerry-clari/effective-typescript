@@ -62,9 +62,105 @@ type StringList = (string | number)[];
 const names: StringList = ['alice', 'bob', 'jan', 1];
 const people3 = names.map(mappingFunc);
 
+const primitiveString: string = "primitive";
+const wrappedString: String = new String("wrapped");
+
+console.log(typeof primitiveString);
+console.log(typeof wrappedString);
+console.log(wrappedString == "wrapped");
+console.log(wrappedString === "wrapped");
+
+const obj = {
+  a: 1,
+  b: 2,
+};
+
+const obj2: Readonly<{ a: number, b: number }> = {
+  a: 1,
+  b: 2,
+};
+
+const objFrozen = Object.freeze(obj);
+
+obj2.a = 3;
+objFrozen.a = 3;
+
+console.log("obj2", obj2)
+console.log("objFrozen", objFrozen)
+
+function acceptAString(a: string) {
+}
+
+// acceptAString(wrappedString);
+let a: string | null = null;
+
+const aIsTrue = Boolean(a);
+
+console.log(aIsTrue === true, aIsTrue === false);
+
+if (Boolean(a)) {
+  // do something
+}
 
 personFunc(alice);
 personFunc(bob);
+
+interface Options {
+  title: string;
+  darkMode?: boolean;
+}
+
+const o: Options = {
+  title: 'o',
+  darkMode: false,
+};
+
+// Not what you meant to do
+const o2 = {
+  title: 'o',
+  darkmode: false,
+} as Options;
+
+
+function add(a: number, b: number): number { return a + b }
+function sub(a: number, b: number): number { return a - b }
+function mul(a: number, b: number): number { return a * b }
+
+type BinaryFunc = (a: number, b: number) => number;
+const add2: BinaryFunc = (a, b) => { return a + b }
+const sub2: BinaryFunc = (a, b) => { return a - b }
+const mul2: BinaryFunc = (a, b) => { return a * b }
+
+type AddFunc = typeof add;
+
+interface IState {
+  name: string;
+  capital: string;
+}
+
+interface IState {
+  population: number;
+}
+
+const wyoming: IState = {
+  name: 'Wyoming',
+  capital: 'Cheyenne',
+  population: 1,
+}
+
+const DEF = "something";
+const DEF_LIST: readonly number[] = [ 1, 2 ];
+
+
+function arraySum(arr: readonly number[]) {
+  let sum = 0, num;
+  while (( num = arr.pop()) !== undefined) {
+    sum += num;
+  }
+  return sum;
+}
+
+console.log(arraySum(DEF_LIST));
 
 export default async function Chapter2() {
 }
