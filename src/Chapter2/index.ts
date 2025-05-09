@@ -164,3 +164,106 @@ console.log(arraySum(DEF_LIST));
 
 export default async function Chapter2() {
 }
+
+type Inner = {
+  x: number;
+}
+
+interface Outer {
+  inner: Readonly<Inner>,
+}
+
+const obj21: Readonly<Outer> = { inner: { x: 0 } };
+
+obj21.inner = { x: 1 };
+
+obj21.inner.x = 1;
+
+interface State {
+  userId: string;
+  pageTitle: string;
+  recentFiles: number[];
+  pageContents: string;
+}
+
+interface TopNavState {
+  userId: string;
+  pageTitle: string;
+  recentFiles: string[];
+}
+
+// type State2 = TopNavState & { pageContents: string };
+
+interface TopNavState2 {
+  userId: State['userId'];
+  pageTitle: State['pageTitle'];
+  recentFiles: State['recentFiles']
+  loggedIn: boolean;
+}
+
+type TopNavState3 = Pick<State, 'userId' | 'pageTitle'>;
+
+const tns3: TopNavState3 = {
+  userId: '1',
+  pageTitle: 'a',
+}
+
+// type Pick<T, K> = { [k in K]: T[k] };
+
+interface Options3 {
+  width: number;
+  height: number;
+  color: string;
+  label: string;
+}
+
+// type OptionsUpdate = {
+//   width?: number;
+//   height?: number;
+//   color?: string;
+//   label?: string;
+// };
+
+type OptionsUpdate = { [k in keyof Options3]?: Options3[k] } & { width: Options3['width'] }
+
+type OptionsUpdate2 = Partial<Options3>;
+
+function updateOptions(options: Options3, updateOptions: OptionsUpdate2) {
+  return {
+    ...options,
+    ...updateOptions,
+  };
+}
+
+updateOptions({
+    width: 1,
+    height: 1,
+    color: 'a',
+    label: 'b',
+  },
+  {
+    height: 1,
+  }
+)
+
+type SomeType2 = {
+  f1: 1;
+  f2: 2;
+}
+
+const SOME: SomeType2 = {
+  f1: 1,
+  f2: 2,
+}
+
+type SomeType = typeof SOME;
+
+const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {}, 1);
+
+type RecordEx = Record<'x' | 'y', number> & { id: string };
+
+const recordEx: RecordEx = {
+  id: 'a',
+  x: 1,
+  y: 1,
+}
