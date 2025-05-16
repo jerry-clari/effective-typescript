@@ -1,3 +1,3 @@
-import Chapter2 from './Chapter2';
+import Chapter3 from './Chapter3';
 
-Chapter2();
+Chapter3();
