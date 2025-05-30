@@ -118,6 +118,92 @@ declare let hasDates: boolean;
 const nameTitle = { name: 'a', title: 'b' };
 const p = { ...nameTitle, ...(hasDates && {start: 1, end: 2})};
 
+function narrowSomething(x: Promise<number> | Map<string, string> | null) {
+  console.log(x);
+  // if (x === null) throw new Error('x is null');
+  // if (x === null) return;
+  // if (typeof x === 'object') return;
+  // if (x === null || x instanceof Promise) return;
+  // if (x && x) return; // interestingly narrows out Promise
+  if (x === null || 'then' in x) return;
+  console.log(x);
+}
+
+function narrowSomethingElse(x: string | string[]) {
+  if (Array.isArray(x)) return;
+  console.log(x);
+}
+
+
+function narrowSomethingElse2(x: Map<string, string> | null) {
+  console.log(x);
+  if (typeof x === 'object') {
+    // x still can be null here
+    console.log(x);
+  }
+}
+
+interface UploadEvent { type: 'upload', filename: string, contents: string };
+interface DownloadEvent { type: 'download', filename: string, size: number };
+type AppEvent = UploadEvent | DownloadEvent;
+
+function handleAppEvent(appEvent: AppEvent) {
+  console.log(appEvent.filename);
+  if (appEvent.type === 'upload') {
+    console.log(appEvent.contents);
+  } else if (appEvent.type === 'download') {
+    console.log(appEvent.size);
+  }
+}
+
+class EventClass {
+}
+
+class CreateEventClass extends EventClass {
+}
+
+class DeleteEventClass extends EventClass {
+}
+
+function handleEventClassInstance(event: EventClass) {
+  console.log(event);
+  if (event instanceof CreateEventClass) {
+    console.log(event);
+  }
+  if (event instanceof DeleteEventClass) {
+    console.log(event);
+  }
+}
+
+type NumberNowOrLater = number | Promise<number>;
+
+function isPromiseNumber(el: NumberNowOrLater): el is Promise<number> {
+// function isPromiseNumber(el: NumberNowOrLater) {
+  return !0;
+}
+
+const numberStuff: NumberNowOrLater[] = [];
+
+numberStuff.filter(isPromiseNumber).forEach((val) => console.log(val));
+
+function handleNumberNowOrLater(el: NumberNowOrLater) {
+  console.log(el);
+  if (isPromiseNumber(el)) {
+    console.log(el);
+  }
+}
+
+const simpleMap = new Map<string, string>();
+
+let xx: string | undefined = simpleMap.get('x');
+if (xx) {
+  console.log(xx);
+  setTimeout(() => {
+    console.log(xx);
+  }, 0);
+  xx = undefined;
+}
+
 export default async function Chapter3() {
   let x: number = 12;
   let y = 12;
