@@ -204,10 +204,81 @@ if (xx) {
   xx = undefined;
 }
 
-export default async function Chapter3() {
-  let x: number = 12;
-  let y = 12;
+interface Thing {
+  name: string;
+  desc?: string;
+}
 
+function doAThing(thing: Thing) {
+  const desc = thing.desc;
+  if (desc) {
+    console.log(desc.length);
+  }
+}
+
+const place = { a: '1', b: 5 };
+const a = place.a;
+
+type Lang = 'js' | 'ts';
+function setLang(lang: Lang) {}
+
+setLang('js');
+
+const lang = 'js';
+setLang(lang);
+
+function panTo(where: readonly [number, number]) {}
+panTo([10, 20]);
+
+const loc = [10, 20] as const;
+
+panTo(loc);
+
+
+function callWithRand(fn: (n1: number, n2: number) => void) {
+  fn(Math.random(), Math.random());
+}
+
+callWithRand((a, b) => {
+  console.log(a+b);
+});
+
+const fn = (a: number, b: number) => {
+  console.log(a+b);
+};
+
+callWithRand(fn);
+
+
+function range(start: number, limit: number): number[] {
+  const nums = [];
+  if (limit > 0) {
+    for (let i = start; i < limit; i += 1) {
+      nums.push(i);
+    }
+  } else {
+    nums.push('a');
+    console.log(nums);
+  }
+  logListNumString(nums);
+  console.log(nums);
+  return nums;
+}
+
+async function getNumber(something: boolean): Promise<number> {
+  if (something) {
+    return getNumber(false);
+  }
+  return 4;
+}
+
+const gnp = getNumber(true);
+
+function logListNumString(list: (number | string)[]) {
+}
+
+
+export default async function Chapter3() {
   doCallback((num) => {
     console.log(abs(num));
     return '';
@@ -217,3 +288,30 @@ export default async function Chapter3() {
   await getResponse(1);
   abs( await getResponse(2));
 }
+
+type Seed = string;
+
+interface SeedAPI {
+  '/seeds': Seed[],
+  '/seed/apple': Seed,
+  '/seed/strawberry': Seed,
+}
+
+declare function fetchApi2<API, Path extends keyof API>(path: Path): Promise<API[Path]>;
+
+const berry = fetchApi2<SeedAPI, '/seed/strawberry'>('/seed/strawberry');
+
+declare class ApiFetcher<API> {
+  fetch<Path extends keyof API>(path: Path): Promise<API[Path]>;
+}
+
+declare function fetchApi3<API>(): <Path extends keyof API>(path: Path) => Promise<API[Path]>;
+
+async function some() {
+  const fetcher = new ApiFetcher<SeedAPI>();
+  const berry = await fetcher.fetch('/seed/strawberry');
+
+  const berry2 = await fetchApi3<SeedAPI>()('/seed/strawberry');
+}
+
+
